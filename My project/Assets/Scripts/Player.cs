@@ -6,6 +6,6 @@ public class PLayer : MonoBehaviour
 {
     private void Update()
     {
-        Input.getkey
+        
     }
 }
