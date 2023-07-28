@@ -5,10 +5,15 @@ using UnityEngine;
 public class PlayerAnimator : MonoBehaviour
 {
     private Animator animator;
-
-    private void Start()
+    [SerializeField] private Player player;
+    private void Awake()
     {
         animator = GetComponent<Animator>();
-        animator.SetBool()
+        
+    }
+
+    private void Update()
+    {
+        animator.SetBool("IsWalking", player.IsWalking());
     }
 }

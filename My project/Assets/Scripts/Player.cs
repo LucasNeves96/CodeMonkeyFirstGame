@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PLayer : MonoBehaviour
+public class Player : MonoBehaviour
 {   
     [SerializeField] float MoveSpeed = 7;
     //SerializeField significa q ele vai aparecer no nosso menu da Unity.
 
+   private bool isWalking;
     private void Update()
     {
         Vector3 InputVector = new Vector3 (0,0,0);
@@ -34,8 +35,13 @@ public class PLayer : MonoBehaviour
         float RotationSpeed = 10f;
         transform.forward = Vector3.Slerp(transform.forward, InputVector, Time.deltaTime * RotationSpeed);
 
-        Debug.Log(InputVector);
+         isWalking = InputVector != Vector3.zero;
 
-        
+        Debug.Log(InputVector);
+    }
+
+    public bool IsWalking()
+    {
+      return isWalking;
     }
 }
