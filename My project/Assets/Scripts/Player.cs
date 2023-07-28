@@ -4,44 +4,28 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {   
-    [SerializeField] float MoveSpeed = 7;
+   [SerializeField] float MoveSpeed = 7;
     //SerializeField significa q ele vai aparecer no nosso menu da Unity.
-
+   [SerializeField] GameInput gameInput;
    private bool isWalking;
-    private void Update()
-    {
-        Vector3 InputVector = new Vector3 (0,0,0);
-        if(Input.GetKey(KeyCode.W))
-        {
-           InputVector.z = 1;
-        }
-        if(Input.GetKey(KeyCode.A))
-        {
-           InputVector.x = -1;
-        }
-        if(Input.GetKey(KeyCode.S))
-        {
-           InputVector.z = -1;
-        }
-        if(Input.GetKey(KeyCode.D))
-        {
-           InputVector.x = 1;
-        }
+   private Vector2 InputVector;
 
-        InputVector = InputVector.normalized; // Isso faz com que o tamanho do vetor seja sempre 1 (caso alguém ande na diagonal, a força será de 0,71 em x e z para que o tamanho do vetor movimento seja 1).
+   private void Update()
+   {
+      InputVector = gameInput.GetMovementVectorNormalized();
+      Vector3 MoveDir = new Vector3(InputVector.x, 0f, InputVector.y);
+      transform.position += (MoveDir * MoveSpeed * Time.deltaTime);
 
-        transform.position += (InputVector * MoveSpeed * Time.deltaTime); 
+      float RotationSpeed = 10f;
+      transform.forward = Vector3.Slerp(transform.forward, MoveDir, Time.deltaTime * RotationSpeed);
 
-        float RotationSpeed = 10f;
-        transform.forward = Vector3.Slerp(transform.forward, InputVector, Time.deltaTime * RotationSpeed);
+      isWalking = (Vector3)InputVector != Vector3.zero;
 
-         isWalking = InputVector != Vector3.zero;
+      Debug.Log(InputVector);
+   }
 
-        Debug.Log(InputVector);
-    }
-
-    public bool IsWalking()
-    {
+   public bool IsWalking()
+   {
       return isWalking;
-    }
+   }
 }
