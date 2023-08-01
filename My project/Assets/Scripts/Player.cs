@@ -11,6 +11,33 @@ public class Player : MonoBehaviour
    private bool isWalking;
    private Vector3 LastInteractDir;
 
+   private void Start()
+   {
+      gameInput.OnInteractAction += GameInput_OnInteractAction;
+   }
+
+   private void GameInput_OnInteractAction(object sender, System.EventArgs e)
+   {
+      Vector2 InputVector = gameInput.GetMovementVectorNormalized();
+      Vector3 MoveDir = new Vector3(InputVector.x, 0f, InputVector.y);
+
+      if (MoveDir != Vector3.zero)
+      {
+         LastInteractDir = MoveDir;
+      }
+
+      float InteractDistance = 2f;
+      if(Physics.Raycast(transform.position, LastInteractDir, out RaycastHit raycastHit, InteractDistance, layerMask))
+      {
+         if(raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
+         {
+            // Has Clear Counter!
+            clearCounter.Interact(); 
+         }
+      }
+      // raycastHit retorna o objeto q foi alvejado (e é um 'out' que significa que ele retorna esse valor da função).
+   }
+
    private void Update()
    {
       HandleWalking();
@@ -38,11 +65,10 @@ public class Player : MonoBehaviour
          if(raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
          {
             // Has Clear Counter!
-            clearCounter.Interact(); 
+            //clearCounter.Interact(); 
          }
       }
       // raycastHit retorna o objeto q foi alvejado (e é um 'out' que significa que ele retorna esse valor da função).
-
    }
 
 

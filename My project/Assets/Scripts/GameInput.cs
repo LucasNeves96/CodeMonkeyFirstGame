@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameInput : MonoBehaviour
 {   
+    public event EventHandler OnInteractAction;
     private PlayerInputActions playerInputActions;
     private void Awake() 
     {
@@ -15,7 +17,9 @@ public class GameInput : MonoBehaviour
 
     private void Interact_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        throw new System.NotImplementedException();
+        OnInteractAction?.Invoke(this, EventArgs.Empty);
+        // A "?" serve para que, quando nenhum obj for subscriber do evento OnInterAction, ele não executa. é o mesmo q       
+        // if(OninteractAction != null)
     }
    public Vector2 GetMovementVectorNormalized()
    {
