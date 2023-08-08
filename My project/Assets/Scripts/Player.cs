@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IKitchenObjectParent
 {  
    public static Player Instance{ get; private set; }
    //Isso é uma PROPRIEDADE! Ou sejE! É algo que não está dentro do objeto criado para o Player. Está SOBRE ele. Está na CLASSE dele!
@@ -15,23 +15,27 @@ public class Player : MonoBehaviour
       public ClearCounter EventSelectedCounter;
    }
 
-   [SerializeField] float MoveSpeed = 7;
+    [SerializeField] float MoveSpeed = 7;
     //SerializeField significa q ele vai aparecer no nosso menu da Unity.
-   [SerializeField] GameInput gameInput;
-   [SerializeField] LayerMask layerMask;
+    [SerializeField] GameInput gameInput;
+    [SerializeField] LayerMask layerMask;
+    [SerializeField] private Transform kitchenObjectHoldPoint;
 
-   private bool isWalking;
-   private Vector3 LastInteractDir;
-   private ClearCounter SelectedCounter = null;
 
-   private void Awake() 
-   {
+    private bool isWalking;
+    private Vector3 LastInteractDir;
+    private ClearCounter SelectedCounter = null;
+    private KitchenObject KitchenObject = null;
+    
+
+    private void Awake() 
+    {
       if(Instance != null)
       {
          Debug.LogError("There is more than one Player instance!");
       }
       Instance = this;   
-   }
+    }
 
    private void Start()
    {
@@ -42,7 +46,7 @@ public class Player : MonoBehaviour
    {
       if(SelectedCounter != null)
       {
-         SelectedCounter.Interact();
+         SelectedCounter.Interact(this);
       }
       // raycastHit retorna o objeto q foi alvejado (e é um 'out' que significa que ele retorna esse valor da função).
    }
@@ -144,4 +148,29 @@ public class Player : MonoBehaviour
 
       OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs{EventSelectedCounter = SelectedCounter});
    }
+
+    public Transform GetKitchenObjectFollowTransform()
+    {
+        return kitchenObjectHoldPoint;
+    }
+
+    public void SetKitchenObject(KitchenObject kitchenObject)
+    {
+        this.KitchenObject = kitchenObject;
+    }
+
+    public KitchenObject GetKitchenObject()
+    {
+        return this.KitchenObject;
+    }
+
+    public void ClearKitchenObject()
+    {
+        this.KitchenObject = null;
+    }
+
+    public bool HasKitchenObject()
+    {
+        return this.KitchenObject != null;
+    }
 }
