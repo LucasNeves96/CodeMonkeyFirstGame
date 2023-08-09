@@ -39,7 +39,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
    private void Start()
    {
-      gameInput.OnInteractAction += GameInput_OnInteractAction;
+        gameInput.OnInteractAction += GameInput_OnInteractAction;
+        gameInput.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
    }
 
    private void GameInput_OnInteractAction(object sender, System.EventArgs e)
@@ -50,6 +51,14 @@ public class Player : MonoBehaviour, IKitchenObjectParent
       }
       // raycastHit retorna o objeto q foi alvejado (e é um 'out' que significa que ele retorna esse valor da função).
    }
+
+    private void GameInput_OnInteractAlternateAction(object sender, System.EventArgs e)
+    {
+        if (SelectedCounter != null)
+        {
+            SelectedCounter.InteractAlternate(this);
+        }
+    }
 
    private void Update()
    {
@@ -109,7 +118,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
       {
          //Cannot move towards dir, but can it move to x or z?
          Vector3 MoveDirX = new Vector3(MoveDir.x,0,0).normalized;
-         CanMove = !Physics.CapsuleCast(transform.position, transform.position + (Vector3.up*PlayerHeight), PlayerRadius, MoveDirX, MoveDistance);
+         CanMove = (MoveDir.x != 0) && !(Physics.CapsuleCast(transform.position, transform.position + (Vector3.up*PlayerHeight), PlayerRadius, MoveDirX, MoveDistance));
          if(CanMove)
          {
             MoveDir = MoveDirX;
@@ -117,7 +126,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
          else
          {
             Vector3 MoveDirZ = new Vector3(0,0,MoveDir.z).normalized;
-            CanMove = !Physics.CapsuleCast(transform.position, transform.position + (Vector3.up*PlayerHeight), PlayerRadius, MoveDirZ, MoveDistance);
+            CanMove = (MoveDir.z != 0) && !(Physics.CapsuleCast(transform.position, transform.position + (Vector3.up*PlayerHeight), PlayerRadius, MoveDirZ, MoveDistance));
             if(CanMove)
             {
                MoveDir = MoveDirZ;
